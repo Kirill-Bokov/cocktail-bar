@@ -1,0 +1,31 @@
+<article>
+
+<h2>
+{{ cocktail.name }}
+</h2>
+
+
+<p>
+{{ cocktail.description }}
+</p>
+
+
+<p>
+Шагов:
+{{ cocktail.steps.length }}
+</p>
+
+
+<p>
+Создан:
+{{ cocktail.createdAt | date }}
+</p>
+
+
+<button
+(click)="delete()">
+Удалить
+</button>
+
+
+</article>

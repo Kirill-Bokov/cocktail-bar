@@ -9,12 +9,13 @@ import { CocktailInsert } from '../models/coctail-insert.model';
 @Injectable({
     providedIn: 'root',
 })
+
 export class CocktailService {
 
     constructor(
         private readonly repository: CocktailRepository
-    ) {}
-
+    ) { }
+    private initialized = false;
     async initialize(): Promise<void> {
         const cocktails = await this.repository.findAll();
 
@@ -27,7 +28,13 @@ export class CocktailService {
         }
     }
 
-    getCocktails(): Promise<Cocktail[]> {
+    async getCocktails(): Promise<Cocktail[]> {
+
+        if (!this.initialized) {
+            await this.initialize();
+            this.initialized = true;
+        }
+
         return this.repository.findAll();
     }
 
@@ -36,19 +43,19 @@ export class CocktailService {
     }
 
     createCocktail(
-    cocktail: CocktailCreate
-): Promise<number> {
+        cocktail: CocktailCreate
+    ): Promise<number> {
 
-    const now = new Date();
+        const now = new Date();
 
-    const entity: CocktailInsert = {
-        ...cocktail,
-        createdAt: now,
-        updatedAt: now,
-    };
+        const entity: CocktailInsert = {
+            ...cocktail,
+            createdAt: now,
+            updatedAt: now,
+        };
 
-    return this.repository.create(entity);
-}
+        return this.repository.create(entity);
+    }
 
     updateCocktail(
         id: number,

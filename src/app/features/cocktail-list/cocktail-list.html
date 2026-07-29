@@ -1,1 +1,26 @@
-<p>тут будет список коктейлей</p>
+<h1>Список коктейлей</h1>
+
+@if (isLoading()) {
+
+<p>Загрузка...</p>
+
+} @else {
+
+@if (cocktails().length === 0) {
+
+<p>Коктейлей нет.</p>
+
+} @else {
+
+@for (cocktail of cocktails(); track cocktail.id) {
+
+<app-cocktail-card
+  [cocktail]="cocktail"
+  (deleted)="deleteCocktail($event)"
+/>
+
+}
+
+}
+
+}

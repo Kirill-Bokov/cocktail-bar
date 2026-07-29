@@ -1,1 +1,22 @@
-<p>тут будет редактор коктейлей</p>
+<form [formGroup]="form" (ngSubmit)="submit()">
+
+  <h2>Создать коктейль</h2>
+  <input formControlName="name" placeholder="Название">
+  <textarea formControlName="description" placeholder="Описание"></textarea>
+
+  <h3>Шаги</h3>
+  <div formArrayName="steps">
+
+    @for (step of steps.controls; track $index; let i = $index) {
+
+      <div [formGroupName]="i">
+        <textarea formControlName="description" placeholder="Описание шага"></textarea>
+        <button type="button" (click)="removeStep(i)">Удалить</button>
+      </div>
+
+    }
+
+  </div>
+  <button type="button" (click)="addStep()">Добавить шаг</button>
+  <button type="submit">Создать</button>
+</form>
