@@ -1,1 +1,99 @@
-<p>тут описание коктейля будет</p>
+@if (cocktail(); as cocktail) {
+
+
+@if (editing()) {
+
+
+<app-cocktail-form
+  mode="edit"
+  [cocktail]="cocktail"
+  (submitted)="save($event)"
+/>
+
+
+<button
+  type="button"
+  (click)="cancelEditing()">
+
+  Отмена
+
+</button>
+
+
+} @else {
+
+
+@if (imageUrl) {
+
+<img
+  [src]="imageUrl"
+  alt="Изображение коктейля">
+
+}
+
+
+
+<h1>
+{{ cocktail.name }}
+</h1>
+
+
+<p>
+{{ cocktail.description }}
+</p>
+
+
+<h2>
+Шаги
+</h2>
+
+
+@for (
+step of cocktail.steps;
+track $index
+) {
+
+<div>
+
+<p>
+{{ $index + 1 }}.
+{{ step.description }}
+</p>
+
+
+@if (stepImageUrls[$index]) {
+
+<img
+  [src]="stepImageUrls[$index]"
+  alt="Изображение шага">
+
+}
+
+</div>
+
+}
+
+
+
+<button
+type="button"
+(click)="enableEditing()">
+
+Редактировать
+
+</button>
+
+
+<button
+type="button"
+(click)="delete()">
+
+Удалить
+
+</button>
+
+
+}
+
+
+}

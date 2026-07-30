@@ -1,5 +1,14 @@
 <article>
 
+@if(imageUrl) {
+
+<img
+  [src]="imageUrl"
+  alt="Коктейль">
+
+}
+
+
 <h2>
 {{ cocktail.name }}
 </h2>
@@ -16,15 +25,30 @@
 </p>
 
 
-<p>
-Создан:
-{{ cocktail.createdAt | date }}
-</p>
+<button
+type="button"
+(click)="openDetails()">
+
+Подробнее
+
+</button>
 
 
 <button
+type="button"
+(click)="edit()">
+
+Редактировать
+
+</button>
+
+
+<button
+type="button"
 (click)="delete()">
+
 Удалить
+
 </button>
 
 

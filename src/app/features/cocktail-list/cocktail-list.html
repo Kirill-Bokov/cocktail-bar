@@ -1,26 +1,32 @@
-<h1>Список коктейлей</h1>
+<h1>Коктейли</h1>
+
+<a routerLink="/cocktails/new">
+  Создать коктейль
+</a>
+
 
 @if (isLoading()) {
 
-<p>Загрузка...</p>
+<p>
+  Загрузка...
+</p>
+
+} @else if (cocktails().length === 0) {
+
+<p>
+  Коктейлей нет.
+</p>
 
 } @else {
 
-@if (cocktails().length === 0) {
-
-<p>Коктейлей нет.</p>
-
-} @else {
 
 @for (cocktail of cocktails(); track cocktail.id) {
 
 <app-cocktail-card
   [cocktail]="cocktail"
-  (deleted)="deleteCocktail($event)"
 />
 
 }
 
-}
 
 }

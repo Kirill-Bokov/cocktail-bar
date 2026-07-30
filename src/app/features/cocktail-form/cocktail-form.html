@@ -1,0 +1,76 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+
+  <h2>{{ title }}</h2>
+
+  <input formControlName="name" placeholder="Название">
+
+  @if (nameError) {
+    <p class="error">Введите название коктейля</p>
+  }
+
+  <textarea formControlName="description" placeholder="Описание"></textarea>
+
+  @if (descriptionError) {
+    <p class="error">Введите описание коктейля</p>
+  }
+
+  <h3>Изображение коктейля</h3>
+
+  <input
+    type="file"
+    accept="image/*"
+    (change)="onImageSelected($event)">
+
+  @if (form.controls.image.value) {
+    <p>Изображение загружено</p>
+  }
+
+  <h3>Шаги рецепта</h3>
+
+  <div formArrayName="steps">
+
+    @for (step of steps.controls; track $index; let i = $index) {
+      <div [formGroupName]="i">
+        <textarea
+          formControlName="description"
+          placeholder="Описание шага">
+        </textarea>
+
+        @if (stepError(i)) {
+          <p class="error">Заполните описание шага</p>
+        }
+
+        <input
+          type="file"
+          accept="image/*"
+          (change)="onStepImageSelected($event, i)">
+
+        @if (step.controls.image.value) {
+          <p>Изображение шага загружено</p>
+        }
+
+        <button
+          type="button"
+          (click)="removeStep(i)">
+          Удалить шаг
+        </button>
+      </div>
+    }
+
+  </div>
+
+  @if (stepsError) {
+    <p class="error">Добавьте хотя бы один шаг рецепта</p>
+  }
+
+  <button
+    type="button"
+    (click)="addStep()">
+    Добавить шаг
+  </button>
+
+  <button type="submit">
+    {{ submitText }}
+  </button>
+
+</form>
