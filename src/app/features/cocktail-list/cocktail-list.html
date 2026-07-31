@@ -1,32 +1,38 @@
-<h1>Коктейли</h1>
+<section class="cocktail-list">
 
-<a routerLink="/cocktails/new">
-  Создать коктейль
-</a>
+  <header class="page-header">
 
+    <h1>Добро пожаловать в бар "Тестовое задание", что предпочитаете?</h1>
 
-@if (isLoading()) {
-
-<p>
-  Загрузка...
-</p>
-
-} @else if (cocktails().length === 0) {
-
-<p>
-  Коктейлей нет.
-</p>
-
-} @else {
+  </header>
 
 
-@for (cocktail of cocktails(); track cocktail.id) {
+  @if (isLoading()) {
 
-<app-cocktail-card
-  [cocktail]="cocktail"
-/>
+    <p class="message">
+      Загрузка...
+    </p>
 
-}
+  } @else if (cocktails().length === 0) {
 
+    <p class="message">
+      Коктейлей нет.
+    </p>
 
-}
+  } @else {
+
+    <div class="grid">
+
+      @for (cocktail of cocktails(); track cocktail.id) {
+
+        <app-cocktail-card
+          [cocktail]="cocktail"
+        />
+
+      }
+
+    </div>
+
+  }
+
+</section>

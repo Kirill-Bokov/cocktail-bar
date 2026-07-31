@@ -1,0 +1,46 @@
+@use '../../variables' as *;
+
+.content {
+  border-radius: $radius-lg;
+  background: var(--mat-sys-surface-container);
+}
+
+.content-inner {
+  padding: 32px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+h1 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  font: var(--mat-sys-headline-large);
+}
+
+.description {
+  margin: 24px 0;
+  color: var(--mat-sys-on-surface-variant);
+  font: var(--mat-sys-body-large);
+  line-height: 1.6;
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.step {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  border-radius: $radius-md;
+  background: var(--mat-sys-surface-container-high);
+}

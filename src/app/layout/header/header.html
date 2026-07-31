@@ -1,8 +1,39 @@
-<header>
-  <h1>Cocktail Manager</h1>
+<mat-toolbar class="header">
+
+  <a
+    class="logo"
+    routerLink="/cocktails">
+
+    <mat-icon>liquor</mat-icon>
+    <span>Cocktail Manager</span>
+
+  </a>
+
+  <span class="spacer"></span>
 
   <nav>
-    <a routerLink="/cocktails">Коктейли</a>
-    <a routerLink="/cocktails/new">Добавить</a>
+
+    <a
+      mat-button
+      routerLink="/cocktails"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }">
+
+      <mat-icon>liquor</mat-icon>
+      Коктейли
+
+    </a>
+
+    <a
+      mat-flat-button
+      routerLink="/cocktails/new"
+      color="primary">
+
+      <mat-icon>add</mat-icon>
+      Добавить
+
+    </a>
+
   </nav>
-</header>
+
+</mat-toolbar>

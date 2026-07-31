@@ -1,8 +1,6 @@
 @if (cocktail(); as cocktail) {
 
-
 @if (editing()) {
-
 
 <app-cocktail-form
   mode="edit"
@@ -10,54 +8,95 @@
   (submitted)="save($event)"
 />
 
-
-<button
-  type="button"
-  (click)="cancelEditing()">
-
+<button mat-button type="button" (click)="cancelEditing()">
+  <mat-icon>close</mat-icon>
   Отмена
-
 </button>
-
 
 } @else {
 
+<section class="details">
 
 @if (imageUrl) {
+
+<div class="hero-image">
 
 <img
   [src]="imageUrl"
   alt="Изображение коктейля">
 
+</div>
+
 }
 
+<mat-card class="content">
 
+<div class="content-inner">
+
+<div class="header">
 
 <h1>
-{{ cocktail.name }}
+  <mat-icon>local_bar</mat-icon>
+  {{ cocktail.name }}
 </h1>
 
+<div class="actions">
 
-<p>
-{{ cocktail.description }}
+<button
+  mat-icon-button
+  aria-label="Редактировать"
+  (click)="enableEditing()">
+
+<mat-icon>
+  edit
+</mat-icon>
+
+</button>
+
+<button
+  mat-icon-button
+  aria-label="Удалить"
+  (click)="delete()">
+
+<mat-icon>
+  delete
+</mat-icon>
+
+</button>
+
+</div>
+
+</div>
+
+
+<p class="description">
+  {{ cocktail.description }}
 </p>
 
 
+<mat-divider />
+
+
 <h2>
-Шаги
+  <mat-icon>format_list_numbered</mat-icon>
+  Шаги приготовления
 </h2>
 
 
-@for (
-step of cocktail.steps;
-track $index
-) {
+<div class="steps">
 
-<div>
+@for (step of cocktail.steps; track $index) {
+
+<div class="step">
+
+<div class="number">
+  {{ $index + 1 }}
+</div>
+
+<div class="step-content">
 
 <p>
-{{ $index + 1 }}.
-{{ step.description }}
+  {{ step.description }}
 </p>
 
 
@@ -71,29 +110,18 @@ track $index
 
 </div>
 
-}
-
-
-
-<button
-type="button"
-(click)="enableEditing()">
-
-Редактировать
-
-</button>
-
-
-<button
-type="button"
-(click)="delete()">
-
-Удалить
-
-</button>
-
+</div>
 
 }
 
+</div>
+
+</div>
+
+</mat-card>
+
+</section>
+
+}
 
 }

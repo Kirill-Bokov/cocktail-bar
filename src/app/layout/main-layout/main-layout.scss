@@ -1,0 +1,7 @@
+@use '../../variables' as *;
+
+main {
+  width: min(100%, $content-max-width);
+  margin: 0 auto;
+  padding: $spacing-xl;
+}

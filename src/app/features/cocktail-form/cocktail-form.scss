@@ -1,0 +1,116 @@
+@use '../../variables' as *;
+
+.cocktail-form {
+  width: min(100%, 800px);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+}
+
+h2 {
+  margin: 0;
+  font: var(--mat-sys-headline-medium);
+}
+
+h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 $spacing-md;
+  font: var(--mat-sys-title-large);
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.image-section,
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.file-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--mat-sys-primary);
+  font: var(--mat-sys-body-medium);
+}
+
+.file-status mat-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+}
+
+.step-card {
+  padding: $spacing-md;
+  border-radius: $radius-lg;
+  background: var(--mat-sys-surface-container);
+}
+
+.step-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-md;
+}
+
+.step-header h4 {
+  margin: 0;
+  font: var(--mat-sys-title-medium);
+}
+
+.step-card mat-form-field {
+  margin-bottom: $spacing-sm;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: $spacing-md;
+  margin-top: $spacing-lg;
+}
+
+@media (max-width: 600px) {
+
+  .cocktail-form {
+    width: 100%;
+  }
+
+  .actions {
+    flex-direction: column-reverse;
+  }
+
+  .actions button {
+    width: 100%;
+  }
+
+}
+
+.image-preview,
+.step-image-preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.image-preview img {
+  width: 240px;
+  height: 240px;
+  object-fit: cover;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+}
+
+.step-image-preview img {
+  width: 180px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: $radius-md;
+}

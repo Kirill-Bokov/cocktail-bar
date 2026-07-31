@@ -7,18 +7,28 @@ import { CocktailCreate } from '../../models/coctail-create.model';
 import { ImageUrlService } from '../../shared/image/image-url-service';
 import { CocktailForm } from '../cocktail-form/cocktail-form';
 import { OnDestroy } from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-cocktail-details',
   imports: [
-    CocktailForm
+    CocktailForm,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDividerModule,
   ],
   templateUrl: './cocktail-details.html',
   styleUrl: './cocktail-details.scss',
 })
 export class CocktailDetails implements OnDestroy {
 
-
+  private readonly dialog = inject(MatDialog);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
@@ -200,35 +210,28 @@ export class CocktailDetails implements OnDestroy {
 
   async delete(): Promise<void> {
 
-  const cocktail = this.cocktail();
+  const dialogRef = this.dialog.open(
+    ConfirmDialogComponent,
+    {
+      width: '400px',
+      data: {
+        title: 'Удаление коктейля',
+        message: `Удалить "${this.cocktail()?.name}"?`
+      }
+    }
+  );
 
-  if (!cocktail) {
-    return;
-  }
-
-
-  const confirmed =
-    confirm(
-      `Удалить коктейль "${cocktail.name}"?`
-    );
-
+  const confirmed = await dialogRef.afterClosed().toPromise();
 
   if (!confirmed) {
     return;
   }
 
-
   await this.cocktailService.deleteCocktail(
-    cocktail.id
+    this.cocktail()!.id
   );
 
-
-  await this.state.reload();
-
-
-  await this.router.navigate([
-    '/cocktails'
-  ]);
+  this.router.navigate(['/cocktails']);
 
 }
 }

@@ -1,76 +1,215 @@
-<form [formGroup]="form" (ngSubmit)="submit()">
+<form class="cocktail-form" [formGroup]="form" (ngSubmit)="submit()">
 
-  <h2>{{ title }}</h2>
+<h2>{{ title }}</h2>
 
-  <input formControlName="name" placeholder="Название">
+<mat-form-field appearance="outline">
 
-  @if (nameError) {
-    <p class="error">Введите название коктейля</p>
-  }
+<mat-label>Название коктейля</mat-label>
 
-  <textarea formControlName="description" placeholder="Описание"></textarea>
+<input matInput formControlName="name">
 
-  @if (descriptionError) {
-    <p class="error">Введите описание коктейля</p>
-  }
+@if (nameError) {
 
-  <h3>Изображение коктейля</h3>
+<mat-error>
+  Введите название коктейля
+</mat-error>
 
-  <input
-    type="file"
-    accept="image/*"
-    (change)="onImageSelected($event)">
+}
 
-  @if (form.controls.image.value) {
-    <p>Изображение загружено</p>
-  }
+</mat-form-field>
 
-  <h3>Шаги рецепта</h3>
 
-  <div formArrayName="steps">
+<mat-form-field appearance="outline">
 
-    @for (step of steps.controls; track $index; let i = $index) {
-      <div [formGroupName]="i">
-        <textarea
-          formControlName="description"
-          placeholder="Описание шага">
-        </textarea>
+<mat-label>Описание</mat-label>
 
-        @if (stepError(i)) {
-          <p class="error">Заполните описание шага</p>
-        }
+<textarea matInput rows="4" formControlName="description"></textarea>
 
-        <input
-          type="file"
-          accept="image/*"
-          (change)="onStepImageSelected($event, i)">
+@if (descriptionError) {
 
-        @if (step.controls.image.value) {
-          <p>Изображение шага загружено</p>
-        }
+<mat-error>
+  Введите описание коктейля
+</mat-error>
 
-        <button
-          type="button"
-          (click)="removeStep(i)">
-          Удалить шаг
-        </button>
-      </div>
-    }
+}
 
-  </div>
+</mat-form-field>
 
-  @if (stepsError) {
-    <p class="error">Добавьте хотя бы один шаг рецепта</p>
-  }
 
-  <button
-    type="button"
-    (click)="addStep()">
-    Добавить шаг
-  </button>
+<section class="image-section">
 
-  <button type="submit">
-    {{ submitText }}
-  </button>
+<h3>
+  <mat-icon>image</mat-icon>
+  Изображение коктейля
+</h3>
+
+
+@if (imagePreview) {
+
+<div class="image-preview">
+
+<img
+  [src]="imagePreview"
+  alt="Предпросмотр коктейля">
+
+</div>
+
+}
+
+
+<button
+  mat-stroked-button
+  type="button"
+  (click)="imageInput.click()">
+
+<mat-icon>upload</mat-icon>
+Выбрать изображение
+
+</button>
+
+
+<input
+  #imageInput
+  hidden
+  type="file"
+  accept="image/*"
+  (change)="onImageSelected($event)">
+
+</section>
+
+
+<section formArrayName="steps">
+
+<h3>
+  <mat-icon>format_list_numbered</mat-icon>
+  Шаги рецепта
+</h3>
+
+
+<div class="steps">
+
+@for (step of steps.controls; track $index; let i = $index) {
+
+<mat-card class="step-card" [formGroupName]="i">
+
+<div class="step-header">
+
+<h4>
+  Шаг {{ i + 1 }}
+</h4>
+
+<button
+  mat-icon-button
+  color="warn"
+  type="button"
+  (click)="removeStep(i)">
+
+<mat-icon>
+  delete
+</mat-icon>
+
+</button>
+
+</div>
+
+
+<mat-form-field appearance="outline">
+
+<mat-label>
+  Описание шага
+</mat-label>
+
+<textarea matInput formControlName="description"></textarea>
+
+@if (stepError(i)) {
+
+<mat-error>
+  Заполните описание шага
+</mat-error>
+
+}
+
+</mat-form-field>
+
+
+@if (stepImagePreviews[i]) {
+
+<div class="step-image-preview">
+
+<img
+  [src]="stepImagePreviews[i]"
+  alt="Предпросмотр шага">
+
+</div>
+
+}
+
+<button
+  mat-stroked-button
+  type="button"
+  (click)="openStepFile(i)">
+
+  <mat-icon>upload</mat-icon>
+  Добавить изображение
+
+</button>
+
+
+<input
+  #stepInput
+  hidden
+  type="file"
+  accept="image/*"
+  (change)="onStepImageSelected($event, i)">
+
+
+</mat-card>
+
+}
+
+</div>
+
+
+@if (stepsError) {
+
+<mat-error>
+  Добавьте хотя бы один шаг рецепта
+</mat-error>
+
+}
+
+</section>
+
+
+<div class="actions">
+
+<button
+  mat-stroked-button
+  type="button"
+  (click)="addStep()">
+
+<mat-icon>
+  add
+</mat-icon>
+
+Добавить шаг
+
+</button>
+
+
+<button
+  mat-flat-button
+  color="primary"
+  type="submit">
+
+<mat-icon>
+  save
+</mat-icon>
+
+{{ submitText }}
+
+</button>
+
+</div>
 
 </form>

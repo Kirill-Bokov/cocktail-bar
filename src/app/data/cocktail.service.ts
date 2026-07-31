@@ -16,6 +16,16 @@ export class CocktailService {
         private readonly repository: CocktailRepository
     ) { }
     private initialized = false;
+    private mockImage?: Blob;
+
+    private async getMockImage(): Promise<Blob> {
+        if (!this.mockImage) {
+            const response = await fetch('/mock.jpg');
+            this.mockImage = await response.blob();
+        }
+        return this.mockImage;
+    }
+
     async initialize(): Promise<void> {
         const cocktails = await this.repository.findAll();
 
@@ -42,20 +52,24 @@ export class CocktailService {
         return this.repository.findById(id);
     }
 
-    createCocktail(
-        cocktail: CocktailCreate
-    ): Promise<number> {
+    async createCocktail(
+    cocktail: CocktailCreate
+): Promise<number> {
 
-        const now = new Date();
+    const now = new Date();
 
-        const entity: CocktailInsert = {
-            ...cocktail,
-            createdAt: now,
-            updatedAt: now,
-        };
+    const preparedCocktail =
+        await this.prepareImages(cocktail);
 
-        return this.repository.create(entity);
-    }
+    const entity: CocktailInsert = {
+        ...preparedCocktail,
+        createdAt: now,
+        updatedAt: now,
+    };
+
+    return this.repository.create(entity);
+
+}
 
     updateCocktail(
         id: number,
@@ -70,4 +84,22 @@ export class CocktailService {
     deleteCocktail(id: number): Promise<void> {
         return this.repository.delete(id);
     }
+
+    private async prepareImages(
+    cocktail: CocktailCreate
+): Promise<CocktailCreate> {
+
+    const image = cocktail.image ??
+        await this.getMockImage();
+
+    return {
+        ...cocktail,
+        image,
+        steps: cocktail.steps.map(step => ({
+            ...step,
+            image: step.image ?? image,
+        })),
+    };
+
+}
 }

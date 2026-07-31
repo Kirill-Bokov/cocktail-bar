@@ -1,10 +1,15 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, inject, ViewChildren, QueryList, ElementRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Cocktail } from '../../models/cocktail.model';
 import { CocktailCreate as CocktailCreateModel } from '../../models/coctail-create.model';
 import { FormMode } from '../../models/form-mode';
 import { ImageValidationService } from '../../shared/image/image-validator-service';
 import { ImageCompressionService } from '../../shared/image/image-compression-service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
 
 type StepForm = FormGroup<{
   description: FormControl<string>;
@@ -13,11 +18,18 @@ type StepForm = FormGroup<{
 
 @Component({
   selector: 'app-cocktail-form',
-  imports: [ReactiveFormsModule],
+  imports: [
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule
+  ],
   templateUrl: './cocktail-form.html',
   styleUrl: './cocktail-form.scss',
 })
-export class CocktailForm implements OnChanges {
+export class CocktailForm implements OnChanges, OnDestroy {
 
   private readonly fb = inject(FormBuilder);
   private readonly imageValidation = inject(ImageValidationService);
@@ -27,6 +39,13 @@ export class CocktailForm implements OnChanges {
   @Input() cocktail?: Cocktail;
 
   @Output() submitted = new EventEmitter<CocktailCreateModel>();
+
+  @ViewChildren('stepInput')
+  stepInputs!: QueryList<ElementRef<HTMLInputElement>>;
+
+  imagePreview: string | null = null;
+
+  stepImagePreviews: (string | null)[] = [];
 
   readonly form = this.fb.group({
     name: this.fb.nonNullable.control('', Validators.required),
@@ -38,46 +57,74 @@ export class CocktailForm implements OnChanges {
   get steps() {
     return this.form.controls.steps;
   }
-
+  openStepFile(index: number): void {
+    this.stepInputs.get(index)?.nativeElement.click();
+  }
   get title(): string {
-    return this.mode === 'create' ? 'Создать коктейль' : 'Редактировать коктейль';
+    return this.mode === 'create'
+      ? 'Создать коктейль'
+      : 'Редактировать коктейль';
   }
 
   get submitText(): string {
-    return this.mode === 'create' ? 'Создать' : 'Сохранить';
+    return this.mode === 'create'
+      ? 'Создать'
+      : 'Сохранить';
   }
+
   get nameError(): boolean {
-    return this.form.controls.name.invalid && this.form.controls.name.touched;
+    return this.form.controls.name.invalid &&
+      this.form.controls.name.touched;
   }
 
   get descriptionError(): boolean {
-    return this.form.controls.description.invalid && this.form.controls.description.touched;
+    return this.form.controls.description.invalid &&
+      this.form.controls.description.touched;
   }
 
   stepError(index: number): boolean {
     const step = this.steps.at(index);
-    return step.controls.description.invalid && step.controls.description.touched;
+    return step.controls.description.invalid &&
+      step.controls.description.touched;
   }
 
   get stepsError(): boolean {
-    return this.steps.length === 0 && this.steps.touched;
-  }
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['cocktail'] && this.cocktail) this.fillForm(this.cocktail);
+    return this.steps.length === 0 &&
+      this.steps.touched;
   }
 
-  private createStep(description = '', image: Blob | null = null): StepForm {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['cocktail'] && this.cocktail) {
+      this.fillForm(this.cocktail);
+    }
+  }
+
+  private createStep(
+    description = '',
+    image: Blob | null = null
+  ): StepForm {
     return this.fb.group({
-      description: this.fb.nonNullable.control(description, Validators.required),
+      description: this.fb.nonNullable.control(
+        description,
+        Validators.required
+      ),
       image: this.fb.control<Blob | null>(image),
     });
   }
 
   addStep(): void {
-    this.steps.push(this.createStep());
+    this.steps.push(
+      this.createStep()
+    );
+    this.stepImagePreviews.push(null);
   }
 
   removeStep(index: number): void {
+    const preview = this.stepImagePreviews[index];
+    if (preview) {
+      URL.revokeObjectURL(preview);
+    }
+    this.stepImagePreviews.splice(index, 1);
     this.steps.removeAt(index);
   }
 
@@ -87,16 +134,45 @@ export class CocktailForm implements OnChanges {
       description: cocktail.description,
       image: cocktail.image,
     });
+
     this.steps.clear();
     for (const step of cocktail.steps) {
-      this.steps.push(this.createStep(step.description, step.image));
+      this.steps.push(
+        this.createStep(
+          step.description,
+          step.image
+        )
+      );
     }
+    this.createPreviews();
+  }
+
+  private createPreviews(): void {
+    if (this.cocktail?.image) {
+      this.imagePreview =
+        URL.createObjectURL(
+          this.cocktail.image
+        );
+    }
+
+    this.stepImagePreviews =
+      this.cocktail?.steps.map(step =>
+        step.image
+          ? URL.createObjectURL(step.image)
+          : null
+      ) ?? [];
   }
 
   submit(): void {
     this.form.markAllAsTouched();
-    if (this.form.invalid || this.steps.length === 0) return;
+    if (
+      this.form.invalid ||
+      this.steps.length === 0
+    ) {
+      return;
+    }
     const value = this.form.getRawValue();
+
     this.submitted.emit({
       name: value.name,
       description: value.description,
@@ -109,26 +185,92 @@ export class CocktailForm implements OnChanges {
   }
 
   async onImageSelected(event: Event): Promise<void> {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    if (!file) return;
+    const file =
+      (event.target as HTMLInputElement)
+        .files?.[0];
+    if (!file) {
+      return;
+    }
+
     if (!this.imageValidation.validateFile(file)) {
       alert('Недопустимый файл');
       return;
     }
+
+    const compressed =
+      await this.imageCompression.compress(file);
     this.form.patchValue({
-      image: await this.imageCompression.compress(file)
+      image: compressed
     });
+    this.updateImagePreview(
+      compressed
+    );
   }
 
-  async onStepImageSelected(event: Event, index: number): Promise<void> {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    if (!file) return;
+  async onStepImageSelected(
+    event: Event,
+    index: number
+  ): Promise<void> {
+    const file =
+      (event.target as HTMLInputElement)
+        .files?.[0];
+    if (!file) {
+      return;
+    }
+
     if (!this.imageValidation.validateFile(file)) {
       alert('Недопустимый файл');
       return;
     }
+
+    const compressed =
+      await this.imageCompression.compress(file);
     this.steps.at(index).patchValue({
-      image: await this.imageCompression.compress(file)
+      image: compressed
+    });
+    this.updateStepPreview(
+      compressed,
+      index
+    );
+  }
+
+  private updateImagePreview(
+    image: Blob
+  ): void {
+    if (this.imagePreview) {
+      URL.revokeObjectURL(
+        this.imagePreview
+      );
+    }
+    this.imagePreview =
+      URL.createObjectURL(image);
+  }
+
+  private updateStepPreview(
+    image: Blob,
+    index: number
+  ): void {
+    if (this.stepImagePreviews[index]) {
+      URL.revokeObjectURL(
+        this.stepImagePreviews[index]!
+      );
+    }
+    this.stepImagePreviews[index] =
+      URL.createObjectURL(image);
+  }
+
+  ngOnDestroy(): void {
+    if (this.imagePreview) {
+      URL.revokeObjectURL(
+        this.imagePreview
+      );
+    }
+    this.stepImagePreviews.forEach(url => {
+      if (url) {
+        URL.revokeObjectURL(
+          url
+        );
+      }
     });
   }
 }

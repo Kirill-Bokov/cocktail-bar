@@ -1,6 +1,4 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
-
 import { CocktailListStateService } from '../cocktail-list-state.service';
 import { CocktailCard } from '../cocktail-card/cocktail-card';
 
@@ -9,7 +7,6 @@ import { CocktailCard } from '../cocktail-card/cocktail-card';
   selector: 'app-cocktail-list',
   imports: [
     CocktailCard,
-    RouterLink
   ],
   templateUrl: './cocktail-list.html',
   styleUrl: './cocktail-list.scss',

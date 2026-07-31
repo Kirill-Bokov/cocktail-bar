@@ -1,55 +1,35 @@
-<article>
+<mat-card class="cocktail-card" (click)="openDetails()">
 
-@if(imageUrl) {
+  <div class="image-wrapper">
 
-<img
-  [src]="imageUrl"
-  alt="Коктейль">
+    @if(imageUrl) {
+    <img [src]="imageUrl" [alt]="cocktail.name">
+    } @else {
+    <div class="placeholder">
+      <mat-icon>liquor</mat-icon>
+    </div>
+    }
 
-}
+    <div class="actions" (click)="$event.stopPropagation()">
+      <button mat-icon-button aria-label="Редактировать" (click)="edit()">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button aria-label="Удалить" (click)="delete()">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </div>
 
-
-<h2>
-{{ cocktail.name }}
-</h2>
-
-
-<p>
-{{ cocktail.description }}
-</p>
-
-
-<p>
-Шагов:
-{{ cocktail.steps.length }}
-</p>
-
-
-<button
-type="button"
-(click)="openDetails()">
-
-Подробнее
-
-</button>
-
-
-<button
-type="button"
-(click)="edit()">
-
-Редактировать
-
-</button>
-
-
-<button
-type="button"
-(click)="delete()">
-
-Удалить
-
-</button>
-
-
-</article>
+  <mat-card-content>
+    <h2>{{ cocktail.name }}</h2>
+    <p class="description">
+      {{ cocktail.description }}
+    </p>
+    <div class="info">
+      <mat-icon>format_list_numbered</mat-icon>
+      <span>
+        Количество шагов в рецепте: {{ cocktail.steps.length }}
+      </span>
+    </div>
+  </mat-card-content>
+</mat-card>

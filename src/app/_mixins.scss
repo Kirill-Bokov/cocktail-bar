@@ -1,0 +1,40 @@
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@mixin card {
+  border-radius: $radius-lg;
+  box-shadow: $shadow-md;
+  overflow: hidden;
+  transition:
+    transform $transition-fast,
+    box-shadow $transition-fast;
+}
+
+@mixin hover-lift {
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow-lg;
+  }
+}
+
+@mixin icon-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  @include flex-center;
+}
+
+@mixin page-container {
+  width: min(100%, $content-max-width);
+  margin-inline: auto;
+  padding-inline: $spacing-lg;
+}
