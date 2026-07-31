@@ -53,23 +53,23 @@ export class CocktailService {
     }
 
     async createCocktail(
-    cocktail: CocktailCreate
-): Promise<number> {
+        cocktail: CocktailCreate
+    ): Promise<number> {
 
-    const now = new Date();
+        const now = new Date();
 
-    const preparedCocktail =
-        await this.prepareImages(cocktail);
+        const preparedCocktail =
+            await this.prepareImages(cocktail);
 
-    const entity: CocktailInsert = {
-        ...preparedCocktail,
-        createdAt: now,
-        updatedAt: now,
-    };
+        const entity: CocktailInsert = {
+            ...preparedCocktail,
+            createdAt: now,
+            updatedAt: now,
+        };
 
-    return this.repository.create(entity);
+        return this.repository.create(entity);
 
-}
+    }
 
     updateCocktail(
         id: number,
@@ -86,20 +86,20 @@ export class CocktailService {
     }
 
     private async prepareImages(
-    cocktail: CocktailCreate
-): Promise<CocktailCreate> {
+        cocktail: CocktailCreate
+    ): Promise<CocktailCreate> {
 
-    const image = cocktail.image ??
-        await this.getMockImage();
+        const image = cocktail.image ??
+            await this.getMockImage();
 
-    return {
-        ...cocktail,
-        image,
-        steps: cocktail.steps.map(step => ({
-            ...step,
-            image: step.image ?? image,
-        })),
-    };
+        return {
+            ...cocktail,
+            image,
+            steps: cocktail.steps.map(step => ({
+                ...step,
+                image: step.image ?? image,
+            })),
+        };
 
-}
+    }
 }
