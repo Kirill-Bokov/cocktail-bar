@@ -1,59 +1,118 @@
-# CocktailBar
+# Cocktail Bar
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.19.
+![Angular](https://img.shields.io/badge/Angular-21-DD0031?style=flat\&logo=angular)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat\&logo=typescript)
+![IndexedDB](https://img.shields.io/badge/Storage-IndexedDB-orange)
+![Angular Material](https://img.shields.io/badge/UI-Angular%20Material-757575?style=flat\&logo=materialdesign)
 
-## Development server
+Cocktail Bar — современное веб-приложение для создания, хранения и управления собственной коллекцией коктейлей.
 
-To start a local development server, run:
+Проект демонстрирует разработку полноценного frontend-приложения на Angular 21 с использованием современных подходов: standalone-компонентов, реактивных форм, строгой типизации и локального хранения данных через IndexedDB.
 
-```bash
-ng serve
+---
+
+## Возможности
+
+* Создание новых коктейлей
+* Добавление рецепта и описания
+* Загрузка изображений коктейлей
+* Предпросмотр изображения перед сохранением
+* Хранение данных непосредственно в браузере
+* Просмотр списка созданных коктейлей
+* Валидация пользовательского ввода
+* Компонентная архитектура приложения
+* Адаптивный интерфейс
+
+---
+
+## Технологический стек
+
+### Frontend
+
+* Angular 21
+* TypeScript
+* Angular Reactive Forms
+* Angular Material
+* SCSS
+
+### Хранение данных
+
+* IndexedDB
+* Browser Storage API
+
+
+### IndexedDB вместо LocalStorage
+
+Для хранения данных используется IndexedDB.
+
+Выбор обусловлен необходимостью работы с изображениями и бинарными данными.
+
+| LocalStorage       | IndexedDB                 |
+| ------------------ | ------------------------- |
+| Только строки      | Объекты и бинарные данные |
+| Ограниченный объём | Большой объём данных      |
+| Синхронный API     | Асинхронный API           |
+| Нет поддержки Blob | Работа с изображениями    |
+
+Использование IndexedDB позволяет сохранять изображения коктейлей непосредственно в браузере без необходимости отдельного backend-хранилища.
+
+---
+
+### Особенности работы с изображениями
+
+Процесс обработки изображения:
+
+```text
+Выбор файла
+      ↓
+Проверка формата
+      ↓
+Создание Blob URL
+      ↓
+Отображение предпросмотра
+      ↓
+Сохранение Blob в IndexedDB
+      ↓
+Восстановление изображения при загрузке приложения
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+---
 
-## Code scaffolding
+## Установка и запуск
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Клонирование репозитория:
 
 ```bash
-ng generate --help
+git clone https://github.com/Kirill-Bokov/cocktail-bar
 ```
 
-## Building
-
-To build the project run:
+Переход в директорию проекта:
 
 ```bash
-ng build
+cd cocktail-bar
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Установка зависимостей:
 
 ```bash
-ng test
+npm install
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+Запуск development-сервера:
 
 ```bash
-ng e2e
+npm start
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+После запуска приложение доступно:
 
-## Additional Resources
+```text
+http://localhost:4200
+```
+---
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Автор
+
+Frontend Developer
+
+GitHub: https://github.com/Kirill-Bokov
