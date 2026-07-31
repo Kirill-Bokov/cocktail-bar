@@ -1,38 +1,66 @@
 <section class="cocktail-list">
 
-  <header class="page-header">
+<header class="page-header">
 
-    <h1>Добро пожаловать в бар "Тестовое задание", что предпочитаете?</h1>
+<h1>Добро пожаловать в бар "Тестовое задание", что предпочитаете?</h1>
 
-  </header>
+<mat-form-field appearance="outline">
+
+<mat-label>
+  Сортировка
+</mat-label>
+
+<mat-select [value]="sortType()" (selectionChange)="sortType.set($event.value)">
+
+<mat-option value="dateDesc">
+  Сначала новые
+</mat-option>
+
+<mat-option value="dateAsc">
+  Сначала старые
+</mat-option>
+
+<mat-option value="nameAsc">
+  По названию А-Я
+</mat-option>
+
+<mat-option value="nameDesc">
+  По названию Я-А
+</mat-option>
+
+<mat-option value="stepsDesc">
+  Больше шагов
+</mat-option>
+
+<mat-option value="stepsAsc">
+  Меньше шагов
+</mat-option>
+
+</mat-select>
+
+</mat-form-field>
+
+</header>
 
 
-  @if (isLoading()) {
+@if (isLoading()) {
 
-    <p class="message">
-      Загрузка...
-    </p>
+<p class="message">
+  Загрузка...
+</p>
 
-  } @else if (cocktails().length === 0) {
+} @else if (sortedCocktails().length === 0) {
 
-    <p class="message">
-      Коктейлей нет.
-    </p>
+<p class="message">
+  Коктейлей нет.
+</p>
 
-  } @else {
+} @else {
 
-    <div class="grid">
-
-      @for (cocktail of cocktails(); track cocktail.id) {
-
-        <app-cocktail-card
-          [cocktail]="cocktail"
-        />
-
-      }
-
-    </div>
-
-  }
-
+<div class="grid">
+@for (cocktail of sortedCocktails(); track cocktail.id) {
+<app-cocktail-card [cocktail]="cocktail"/>
+}
+</div>
+}
 </section>

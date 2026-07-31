@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { ChangeDetectorRef } from '@angular/core';
 
 type StepForm = FormGroup<{
   description: FormControl<string>;
@@ -34,6 +35,7 @@ export class CocktailForm implements OnChanges, OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly imageValidation = inject(ImageValidationService);
   private readonly imageCompression = inject(ImageCompressionService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   @Input() mode: FormMode = 'create';
   @Input() cocktail?: Cocktail;
@@ -53,7 +55,7 @@ export class CocktailForm implements OnChanges, OnDestroy {
     steps: this.fb.array<StepForm>([]),
     image: this.fb.control<Blob | null>(null),
   });
-
+  
   get steps() {
     return this.form.controls.steps;
   }
@@ -148,20 +150,29 @@ export class CocktailForm implements OnChanges, OnDestroy {
   }
 
   private createPreviews(): void {
-    if (this.cocktail?.image) {
-      this.imagePreview =
-        URL.createObjectURL(
-          this.cocktail.image
-        );
-    }
 
-    this.stepImagePreviews =
-      this.cocktail?.steps.map(step =>
-        step.image
-          ? URL.createObjectURL(step.image)
-          : null
-      ) ?? [];
+  if (this.imagePreview) {
+    URL.revokeObjectURL(this.imagePreview);
   }
+
+  this.stepImagePreviews.forEach(url => {
+    if (url) {
+      URL.revokeObjectURL(url);
+    }
+  });
+
+  this.imagePreview = this.cocktail?.image
+    ? URL.createObjectURL(this.cocktail.image)
+    : null;
+
+  this.stepImagePreviews =
+    this.cocktail?.steps.map(step =>
+      step.image
+        ? URL.createObjectURL(step.image)
+        : null
+    ) ?? [];
+
+}
 
   submit(): void {
     this.form.markAllAsTouched();
@@ -234,30 +245,31 @@ export class CocktailForm implements OnChanges, OnDestroy {
     );
   }
 
-  private updateImagePreview(
-    image: Blob
-  ): void {
-    if (this.imagePreview) {
-      URL.revokeObjectURL(
-        this.imagePreview
-      );
-    }
-    this.imagePreview =
-      URL.createObjectURL(image);
+  private updateImagePreview(image: Blob): void {
+  if (this.imagePreview) {
+    URL.revokeObjectURL(this.imagePreview);
   }
+  this.imagePreview = URL.createObjectURL(image);
+  this.cdr.detectChanges();
+}
 
   private updateStepPreview(
-    image: Blob,
-    index: number
-  ): void {
-    if (this.stepImagePreviews[index]) {
-      URL.revokeObjectURL(
-        this.stepImagePreviews[index]!
-      );
-    }
-    this.stepImagePreviews[index] =
-      URL.createObjectURL(image);
+  image: Blob,
+  index: number
+): void {
+
+  if (this.stepImagePreviews[index]) {
+    URL.revokeObjectURL(
+      this.stepImagePreviews[index]!
+    );
   }
+
+  this.stepImagePreviews[index] =
+    URL.createObjectURL(image);
+
+  this.cdr.detectChanges();
+
+}
 
   ngOnDestroy(): void {
     if (this.imagePreview) {

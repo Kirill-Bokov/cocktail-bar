@@ -37,6 +37,10 @@ export const DEFAULT_COCKTAILS: CocktailCreate[] = [
         description: 'Процедите коктейль в бокал и подавайте охлаждённым.',
         image: null,
       },
+      {
+        description: 'Готово, вы великолепны!.',
+        image: null,
+      },
     ],
   },
   {
@@ -54,6 +58,14 @@ export const DEFAULT_COCKTAILS: CocktailCreate[] = [
       },
       {
         description: 'Перемешайте и украсьте цедрой апельсина.',
+        image: null,
+      },
+      {
+        description: 'Настоящий олд фэшн.',
+        image: null,
+      },
+      {
+        description: 'Готово, вы великолепны!',
         image: null,
       },
     ],
